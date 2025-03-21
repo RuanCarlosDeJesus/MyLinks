@@ -1,4 +1,4 @@
-import { Link, Navigate, useNavigate} from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import {Input} from "../../components/input"
 import { FormEvent, useState } from "react";
 import {auth} from '../../services/firebaseConections'

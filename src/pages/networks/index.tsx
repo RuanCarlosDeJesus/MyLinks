@@ -13,7 +13,7 @@ export function Networks(){
     const[facebook,setFacebook] = useState("")
     const[instagram,setInstagram] = useState("")
     const[youtube,setYoutube] = useState("")
-    const[privacy,setPrivacy] = useState("")
+   
 
     useEffect(()=>{
         const docRef = doc(db,"social","link");
