@@ -14,24 +14,23 @@ export function Register() {
   async function handleRegister(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
-  
+
     if (email === "" || password === "") {
-      alert("Preencha tudo corretamente");
-      setLoading(false);
-      return;
+        alert("Preencha tudo corretamente");
+        setLoading(false);
+        return;
     }
-  
+
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      // Se você não precisar de 'userCredential', remova esta linha:
-      console.log('Usuário registrado com sucesso', userCredential.user);
-      navigate("/login", { replace: true });
+        await createUserWithEmailAndPassword(auth, email, password);
+        console.log("Usuário registrado com sucesso");
+        navigate("/login", { replace: true });
     } catch (error: any) {
-      setError(error.message); // Corrigido de 'menssage' para 'message'
+        setError(error.message);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  }
+}
   return (
     <div className="flex w-full h-screen items-center justify-center flex-col">
       <form className="w-full max-w-xl flex flex-col m-1" onSubmit={handleRegister}>
