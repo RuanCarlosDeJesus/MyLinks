@@ -127,7 +127,7 @@ useEffect(() => {
           </Link>
         </footer>
         <footer className="mt-1 pt-1">
-        <Link to="/login">
+        <Link to="/register">
           <p className=' text-purple-400 text-xs  underline underline-offset-1 '>Entre com sua conta </p>
           </Link>
         </footer>
