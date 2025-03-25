@@ -12,16 +12,25 @@ const [password,setPassword] = useState("")
 const navigate = useNavigate()
 function handleSubmit(e:FormEvent){
 e.preventDefault()
+
+
 if(email ===''|| password ===''){
     alert("preencha corretamente ")
 }
+
+
 signInWithEmailAndPassword(auth,email,password)
 .then(()=> {
 
     navigate("/admin", { replace: true });
 
 }).catch((error)=>{
-console.log(error)
+    if(!email || !password){
+        alert("sua senha ou seu email estão incorretos!")
+    } else {
+        alert("erro ao login tente novamente")
+    }
+   console.log(error);
 })
 
 

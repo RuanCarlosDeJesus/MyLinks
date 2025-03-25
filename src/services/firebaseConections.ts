@@ -20,3 +20,17 @@ const auth = getAuth(app);
 const db= getFirestore(app);
 const analytics = getAnalytics(app);
 export { auth, db, analytics};
+
+
+import { createUserWithEmailAndPassword } from "firebase/auth";
+ 
+export const createUser = async(email:string,password:string)=>{
+try{
+  const userCredential = await createUserWithEmailAndPassword(auth ,email,password)
+}
+
+catch (error) {
+  console.error("Erro ao criar usuário:", error);
+  throw error;
+}
+}

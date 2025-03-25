@@ -5,6 +5,8 @@ import {Login} from './pages/login/index'
 import {Networks} from './pages/networks/index'
 import {Private} from './routes/private'
 import { Error} from "./pages/error"
+import { Register } from "./pages/register"
+
 const router = createBrowserRouter([
   {
     path:"/",
@@ -14,6 +16,11 @@ const router = createBrowserRouter([
     path:"/admin",
     element: <Private> <Admin/></Private>
   },
+  {
+    path:"/register",
+    element:<Private> <Register/></Private>
+  }
+  ,
 
   {
     path:"/login",
