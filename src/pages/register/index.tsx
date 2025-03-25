@@ -11,26 +11,40 @@ export function Register() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleRegister(e: FormEvent) {
+  const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
+
+    // Verificando se os campos não estão vazios antes de continuar
+    if (!email || !password) {
+      setError("Preencha todos os campos corretamente.");
+      return;
+    }
+
+    // Ativando o estado de carregamento
     setLoading(true);
+    setError(null); // Limpando qualquer erro anterior
 
-    if (email === "" || password === "") {
-        alert("Preencha tudo corretamente");
-        setLoading(false);
-        return;
-    }
+    const registerUser = () => {
+      return createUserWithEmailAndPassword(auth, email, password);
+    };
 
-    try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        console.log("Usuário registrado com sucesso");
+    registerUser()
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log('Usuário registrado:', user);
+
+        // Após o registro, navega para a página de login
         navigate("/login", { replace: true });
-    } catch (error: any) {
-        setError(error.message);
-    } finally {
+      })
+      .catch((error) => {
+        // Exibindo o erro, se ocorrer
+        setError(`Erro: ${error.message}`);
+      })
+      .finally(() => {
+        // Desativando o carregamento ao final da operação
         setLoading(false);
-    }
-}
+      });
+  };
   return (
     <div className="flex w-full h-screen items-center justify-center flex-col">
       <form className="w-full max-w-xl flex flex-col m-1" onSubmit={handleRegister}>
