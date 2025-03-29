@@ -21,6 +21,7 @@ interface LinkProps{
     url:string;
     bg:string;
     color:string;
+    backgroundColor:string;
 }
 
 interface SocialLinksProps{
@@ -32,30 +33,34 @@ interface SocialLinksProps{
 export function Home(){
 const [links,setLinks] = useState<LinkProps[]>([])
 const [socialLinks, setSocialLinks] = useState<SocialLinksProps>()
+const [backgroundColor, setBackgroundColor] = useState("#06066d");
 useEffect(()=> {
-  function loadLinks(){
+  function loadLinks() {
     const linksRef = collection(db,"links");
-    const queryRef = query(linksRef,orderBy("created","asc"))
+    const queryRef = query(linksRef, orderBy("created", "asc"));
     getDocs(queryRef)
-    .then((snapshot) => {
+      .then((snapshot) => {
         let lista = [] as LinkProps[];
-        snapshot.forEach((doc)=>{
-            lista.push({
-                id:doc.id,
-                name: doc.data().name,
-                url:doc.data().url,
-                bg: doc.data().bg,
-                color: doc.data().color,
-            })
-            setLinks(lista);
-        })
-    })
+        snapshot.forEach((doc) => {
+          lista.push({
+            id: doc.id,
+            name: doc.data().name,
+            url: doc.data().url,
+            bg: doc.data().bg,
+            color: doc.data().color,
+            backgroundColor: doc.data().backgroundColor,
+          });
+        });
+        setLinks(lista);
+      });
   }
-loadLinks();
-},[])
+  loadLinks();
+}, []);
 
 useEffect(() => {
+    
     function loadingSocialLinks() {
+     
         const docRef = doc(db, "social", "link");
         getDoc(docRef)
             .then((snapshot) => {
@@ -72,14 +77,33 @@ useEffect(() => {
     loadingSocialLinks();
 }, []);
 
+useEffect(() => {
+  const docRef = doc(db, "config", "background"); // O mesmo local onde você salvou a cor no Admin
+  getDoc(docRef)
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.data();
+        setBackgroundColor(data?.backgroundColor || "#ffffff"); // Atualiza a cor de fundo com o valor do Firestore
+      }
+     
 
+
+        
+
+
+
+
+    });
+}, []);
     return (
-        <div  className="flex flex-col w-full py-4 items-center justify-center">
-            
+        <div  className="flex flex-col h-screen w-full py-4 items-center justify-center"   style={{ background: backgroundColor }} >
         <h1 className="md:text-4xl  text-3xl  font-bold text-white mt-20" >  My Links</h1>
+
         <span className="text-gray-50 mb-5 mt-3"> Veja meus Links 👇</span>
 
-        <main className="flex flex-col w-11/12 max-w-xl text-center">
+    
+        <main className="flex flex-col w-11/12 max-w-xl text-center" >
+
            {
             links.map((link)=> (
            
@@ -127,15 +151,15 @@ useEffect(() => {
           </Link>
         </footer>
       
- {/* 
+ 
 <footer className="mt-1 pt-1">
   <Link to="/register">
     <p className='text-purple-400 text-xs underline underline-offset-1'>
-      Entre com sua conta 
+      Não tem uma conta? Cadastre-se!
     </p>
   </Link>
 </footer> 
-*/}
+*
        
         </div>
     )

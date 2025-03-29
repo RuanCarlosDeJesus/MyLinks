@@ -15,10 +15,10 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app); // Esta é a variável que está causando o erro
+const db = getFirestore(app); 
 const analytics = getAnalytics(app);
 
-// Exporte a variável db para que ela seja acessível em outros arquivos
+
 export { auth, db, analytics };
 
 // Função para criar o usuário
