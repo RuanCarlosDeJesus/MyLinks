@@ -16,7 +16,7 @@ async function handleGetLogout(){
             <div className="flex gap-4 font-medium px-3">
                 <Link
  className="px-2 cursor-pointer transform transition duration-300 ease-in-out hover:scale-125"                 to="/"> Home</Link>
-                <Link className="px-2 cursor-pointer transform transition duration-300 ease-in-out hover:scale-125" to="/admin"> Links</Link>
+                <Link className="px-2 cursor-pointer transform transition duration-300 ease-in-out hover:scale-125" to="/admin/"> Links</Link>
                 <Link className="px-2 cursor-pointer transform transition duration-300 ease-in-out hover:scale-125" to="/networks"> Rede sociais</Link>
             </div>
             <button className="px-2 cursor-pointer transform transition duration-300 ease-in-out hover:scale-125"
