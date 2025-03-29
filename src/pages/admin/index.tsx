@@ -1,5 +1,5 @@
 import { useState, useEffect, FormEvent } from "react";
-import { Header } from "../../components/header/index";
+import { Header } from "../../components/header";
 import { Input } from '../../components/input';
 import { FiTrash } from "react-icons/fi";
 import { db } from '../../services/firebaseConections';
@@ -13,7 +13,7 @@ import {
     deleteDoc,
     setDoc,
 } from "firebase/firestore";
-import { auth } from '../../services/firebaseConections'; // Supondo que você tenha configurado a autenticação
+import { auth } from '../../services/firebaseConections';
 
 interface LinkProps {
     id: string;
@@ -33,7 +33,7 @@ export function Admin() {
     const [links, setLinks] = useState<LinkProps[]>([]);
 
     useEffect(() => {
-        const user = auth.currentUser; // Verifica se o usuário está logado
+        const user = auth.currentUser;
         if (user) {
             const linkRef = collection(db, `users/${user.uid}/links`);
             const queryRef = query(linkRef, orderBy("created", "asc"));
@@ -145,18 +145,6 @@ export function Admin() {
                             onChange={(e) => setBackgroundColorAll(e.target.value)} />
                     </div>
                 </section>
-
-                {nameInput !== '' && (
-                    <div className="flex items-center justify-start flex-col mb-7 p-1 border-white border rounded-md">
-                        <label className="text-white font-medium mt-2 mb-2">
-                            Veja como está ficando:
-                        </label>
-                        <article className="w-11/12 max-w-lg flex flex-col items-center justify-between bg-zinc-900 rounded px-1 py-3"
-                            style={{ marginBottom: 8, marginTop: 8, backgroundColor: backgroundColor }}>
-                            <p className="font-medium" style={{ color: textColor }}>{nameInput}</p>
-                        </article>
-                    </div>
-                )}
 
                 <button className="mb-7 bg-blue-600 h-9 rounded-md text-white font-medium gap-4 flex justify-center items-center cursor-pointer">Cadastrar</button>
             </form>
