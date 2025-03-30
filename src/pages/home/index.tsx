@@ -53,7 +53,7 @@ export function Home() {
     function loadingSocialLinks() {
       const docRef = doc(db, "social", "link");
       getDoc(docRef)
-        .then((snapshot: DocumentSnapshot) => {  // Definido como DocumentSnapshot
+        .then((snapshot: DocumentSnapshot) => {  
           if (snapshot.exists()) {
             setSocialLinks({
               facebook: snapshot.data()?.facebook || "",
@@ -70,7 +70,7 @@ export function Home() {
   useEffect(() => {
     const docRef = doc(db, "config", "background");
     getDoc(docRef)
-      .then((snapshot: DocumentSnapshot) => {  // Definido como DocumentSnapshot
+      .then((snapshot: DocumentSnapshot) => {  
         if (snapshot.exists()) {
           const data = snapshot.data();
           setBackgroundColor(data?.backgroundColor || "#ffffff");
