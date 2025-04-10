@@ -16,7 +16,7 @@ export function Header() {
         <div className="flex gap-4 font-medium px-3">
         <Link
   className="px-2 cursor-pointer transform transition duration-300 ease-in-out hover:scale-125"
-  to="/">Home</Link>
+  to="/links">Home</Link>
           <Link
             className="px-2 cursor-pointer transform transition duration-300 ease-in-out hover:scale-125"
             to={`/admin/${username}`}>Links</Link> 

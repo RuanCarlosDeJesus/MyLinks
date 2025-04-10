@@ -11,8 +11,7 @@ import {
     orderBy,
     doc,
     deleteDoc,
-    setDoc,
-    
+    setDoc
 } from "firebase/firestore";
 
 interface LinkProps {
@@ -32,14 +31,18 @@ export function Admin() {
     const [links, setLinks] = useState<LinkProps[]>([]);
 
     useEffect(() => {
-        const linksRef = collection(db, "links");
-        const queryRef = query(linksRef, orderBy("created", "asc"));
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const userLinksRef = collection(db, "users", user.uid, "links");
+        const queryRef = query(userLinksRef, orderBy("created", "asc"));
 
         const unsubscribe = onSnapshot(queryRef, (snapshot) => {
             const lista = snapshot.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data()
-            } as LinkProps));
+            })) as LinkProps[];
+
             setLinks(lista);
         });
 
@@ -71,13 +74,16 @@ export function Admin() {
         }
 
         try {
-            await addDoc(collection(db, "links"), {
+            const userLinksRef = collection(db, "users", user.uid, "links");
+
+            await addDoc(userLinksRef, {
                 name: nameInput,
                 url: url,
                 bg: backgroundColor,
                 color: textColor,
                 created: new Date()
             });
+
             setNameInput("");
             setUrl("");
             alert("Link cadastrado com sucesso!");
@@ -88,8 +94,11 @@ export function Admin() {
     }
 
     async function handleDeleteLink(id: string) {
+        const user = auth.currentUser;
+        if (!user) return;
+
         try {
-            await deleteDoc(doc(db, "links", id));
+            await deleteDoc(doc(db, "users", user.uid, "links", id));
         } catch (error) {
             console.error("Erro ao deletar link:", error);
             alert("Erro ao deletar link");
@@ -113,33 +122,85 @@ export function Admin() {
             <Header />
             <form className="flex flex-col mt-8 mb-3 w-full max-w-xl" onSubmit={handleRegister}>
                 <label className="text-white font-medium mt-2 mb-2">Nome do Link</label>
-                <Input placeholder="Nome do link" value={nameInput} onChange={(e) => setNameInput(e.target.value)} />
+                <Input
+                    placeholder="Nome do link"
+                    value={nameInput}
+                    onChange={(e) => setNameInput(e.target.value)}
+                />
+
                 <label className="text-white font-medium mt-2 mb-2">Nome da URL</label>
-                <Input placeholder="Digite a URL" value={url} onChange={(e) => setUrl(e.target.value)} />
-                <section className="flex my-4 gap-2">
-                    <div className="flex gap-3">
+                <Input
+                    placeholder="Digite a URL"
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                />
+
+                {nameInput !== '' && url !== '' && (
+                    <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-11/12 max-w-xl rounded px-2 py-4 select-none mb-4 text-center font-bold text-lg transition duration-300 hover:scale-105"
+                        style={{ backgroundColor: backgroundColor, color: textColor }}
+                    >
+                        {nameInput}
+                    </a>
+                )}
+
+                <section className="flex my-4 gap-4 flex-wrap">
+                    <div className="flex gap-2 items-center">
+                        <label className="text-white font-medium">Cor do texto</label>
+                        <input
+                            type="color"
+                            className="cursor-pointer"
+                            value={textColor}
+                            onChange={(e) => setTextColor(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex gap-2 items-center">
                         <label className="text-white font-medium">Fundo do link</label>
-                        <input type="color" className="cursor-pointer" value={textColor} onChange={(e) => setTextColor(e.target.value)} />
+                        <input
+                            type="color"
+                            className="cursor-pointer"
+                            value={backgroundColor}
+                            onChange={(e) => setBackgroundColor(e.target.value)}
+                        />
                     </div>
-                    <div className="flex gap-3">
-                        <label className="text-white font-medium">Cor do link</label>
-                        <input type="color" className="cursor-pointer" value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} />
-                    </div>
-                    <div className="flex gap-3">
-                        <label className="text-white font-medium">Cor de fundo</label>
-                        <input type="color" className="cursor-pointer" value={backgroundColorAll} onChange={(e) => setBackgroundColorAll(e.target.value)} />
+                    <div className="flex gap-2 items-center">
+                        <label className="text-white font-medium">Fundo da página</label>
+                        <input
+                            type="color"
+                            className="cursor-pointer"
+                            value={backgroundColorAll}
+                            onChange={(e) => setBackgroundColorAll(e.target.value)}
+                        />
                     </div>
                 </section>
-                <button className="mb-7 bg-blue-600 h-9 rounded-md text-white font-medium">Cadastrar</button>
+
+                <button className="mb-7 bg-blue-600 h-9 rounded-md text-white font-medium">
+                    Cadastrar
+                </button>
             </form>
-            <button className="w-full max-w-xl mb-7 bg-blue-600 h-9 rounded-md text-white font-medium" onClick={handleSaveBackgroundColor}>
+
+            <button
+                className="w-full max-w-xl mb-7 bg-blue-600 h-9 rounded-md text-white font-medium"
+                onClick={handleSaveBackgroundColor}
+            >
                 Salvar Cor de Fundo
             </button>
+
             <h2 className="font-bold text-white mb-4 text-4xl">Meus Links</h2>
             {links.map((item) => (
-                <article key={item.id} className="flex items-center justify-between w-11/12 max-w-xl rounded px-2 py-3 m-2" style={{ backgroundColor: item.bg, color: item.color }}>
+                <article
+                    key={item.id}
+                    className="flex items-center justify-between w-11/12 max-w-xl rounded px-2 py-3 m-2"
+                    style={{ backgroundColor: item.bg, color: item.color }}
+                >
                     <p className="font-bold">{item.name}</p>
-                    <button onClick={() => handleDeleteLink(item.id)} className="border border-dashed py-1 px-2 rounded cursor-pointer">
+                    <button
+                        onClick={() => handleDeleteLink(item.id)}
+                        className="border border-dashed py-1 px-2 rounded cursor-pointer"
+                    >
                         <FiTrash size={18} color="white" />
                     </button>
                 </article>

@@ -32,7 +32,7 @@ export function Register() {
       await updateProfile(user, { displayName: username });
       
       // Cria um documento na coleção "users" usando o username como ID
-      await setDoc(doc(db, "users", username), {
+      await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
         nome: username,
         email,
@@ -42,7 +42,7 @@ export function Register() {
       });
       
       console.log('Usuário criado com sucesso:', user);
-      navigate("/login", { replace: true });
+      navigate("/", { replace: true });
     } catch (error: any) {
       setError(error.message);
     } finally {
